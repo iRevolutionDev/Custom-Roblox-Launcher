@@ -33,8 +33,6 @@ int main(int argc, char** argv)
 			args_vec[7]
 		);
 
-		std::cout << roblox_args << std::endl;
-
 		STARTUPINFOA si;
 		PROCESS_INFORMATION pi;
 		
