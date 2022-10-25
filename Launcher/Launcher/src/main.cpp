@@ -1,5 +1,5 @@
 #include "common.hpp"
-#include "url_parser.hpp"
+#include "utils/url_parser.hpp"
 
 int main(int argc, char** argv)
 {
