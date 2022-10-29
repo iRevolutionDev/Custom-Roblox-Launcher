@@ -11,8 +11,20 @@ Console.WriteLine("Fetching roblox directory...");
 HttpResponseMessage GetRobloxVersion = await client.GetAsync("http://setup.roblox.com/version");
 string RobloxVersion = await GetRobloxVersion.Content.ReadAsStringAsync();
 string RobloxDir = $@"C:\Program Files (x86)\Roblox\Versions\{RobloxVersion}";
+string SecondaryDir = $@"C:\Users\{Environment.UserName}\AppData\Local\Roblox\Versions\{RobloxVersion}";
 
-if (!Directory.Exists(RobloxDir)) RobloxDir = $@"C:\Users\{Environment.UserName}\AppData\Local\Roblox\Versions\{RobloxVersion}";
+if (!Directory.Exists(RobloxDir))
+{
+    if (Directory.Exists(SecondaryDir)) RobloxDir = SecondaryDir;
+    else
+    {
+        Console.WriteLine("Roblox is not installed!");
+        Console.WriteLine("Press any key to exit...");
+        Console.ReadKey();
+        Environment.Exit(0);
+    }
+}
+
 Console.WriteLine("Roblox directory: " + RobloxDir);
 
 // Fetches the latest launcher version
@@ -21,12 +33,19 @@ HttpResponseMessage GetLatestLauncherVersion = await client.GetAsync("https://ap
 dynamic JsonLatestLauncherVersion = JsonConvert.DeserializeObject(await GetLatestLauncherVersion.Content.ReadAsStringAsync());
 string DownloadUrl = JsonLatestLauncherVersion.assets[0].browser_download_url;
 
-
 Console.WriteLine("Latest launcher version: " + JsonLatestLauncherVersion.name);
 
 // Downloads the latest launcher
 Console.WriteLine($"Downloading latest launcher version... ({DownloadUrl})");
 HttpResponseMessage DownloadLatestLauncherVersion = await client.GetAsync(DownloadUrl);
+
+if (!DownloadLatestLauncherVersion.IsSuccessStatusCode)
+{
+    Console.WriteLine("Failed to download latest launcher version!");
+    Console.WriteLine("Press any key to exit...");
+    Console.ReadKey();
+    Environment.Exit(0);
+}
 
 // Deletes the old launcher (shit)
 Console.WriteLine("Deleting old launcher...");
