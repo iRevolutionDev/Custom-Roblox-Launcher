@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 var UserAgent = new ProductInfoHeaderValue("(+Mozilla 5.0)");
 
 HttpClient client = new HttpClient();
-client.DefaultRequestHeaders.UserAgent.Add(UserAgent); // Require for github :fuck_you:
+client.DefaultRequestHeaders.UserAgent.Add(UserAgent);
 
 // Fetches the roblox directory
 Console.WriteLine("Fetching roblox directory...");
@@ -30,10 +30,10 @@ Console.WriteLine("Roblox directory: " + RobloxDir);
 // Fetches the latest launcher version
 Console.WriteLine("Fetching latest launcher version...");
 HttpResponseMessage GetLatestLauncherVersion = await client.GetAsync("https://api.github.com/repos/iRevolutionDev/Custom-Roblox-Launcher/releases/latest");
-dynamic JsonLatestLauncherVersion = JsonConvert.DeserializeObject(await GetLatestLauncherVersion.Content.ReadAsStringAsync());
-string DownloadUrl = JsonLatestLauncherVersion.assets[0].browser_download_url;
+dynamic? JsonLatestLauncherVersion = JsonConvert.DeserializeObject(await GetLatestLauncherVersion.Content.ReadAsStringAsync());
+string? DownloadUrl = JsonLatestLauncherVersion?.assets[0].browser_download_url;
 
-Console.WriteLine("Latest launcher version: " + JsonLatestLauncherVersion.name);
+Console.WriteLine("Latest launcher version: " + JsonLatestLauncherVersion?.name);
 
 // Downloads the latest launcher
 Console.WriteLine($"Downloading latest launcher version... ({DownloadUrl})");
@@ -47,7 +47,7 @@ if (!DownloadLatestLauncherVersion.IsSuccessStatusCode)
     Environment.Exit(0);
 }
 
-// Deletes the old launcher (shit)
+// Deletes the old launcher
 Console.WriteLine("Deleting old launcher...");
 File.Delete($@"{RobloxDir}\RobloxLauncherBeta.exe");
 
