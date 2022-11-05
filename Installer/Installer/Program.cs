@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 
 var UserAgent = new ProductInfoHeaderValue("(+Mozilla 5.0)");
@@ -11,7 +12,7 @@ Console.WriteLine("Fetching roblox directory...");
 HttpResponseMessage GetRobloxVersion = await client.GetAsync("http://setup.roblox.com/version");
 string RobloxVersion = await GetRobloxVersion.Content.ReadAsStringAsync();
 string RobloxDir = $@"C:\Program Files (x86)\Roblox\Versions\{RobloxVersion}";
-string SecondaryDir = $@"C:\Users\{Environment.UserName}\AppData\Local\Roblox\Versions\{RobloxVersion}";
+string SecondaryDir = $@"{Environment.GetEnvironmentVariable("appdata")}\Local\Roblox\Versions\{RobloxVersion}";
 
 if (!Directory.Exists(RobloxDir))
 {
@@ -19,9 +20,23 @@ if (!Directory.Exists(RobloxDir))
     else
     {
         Console.WriteLine("Roblox is not installed!");
-        Console.WriteLine("Press any key to exit...");
-        Console.ReadKey();
-        Environment.Exit(0);
+        Console.WriteLine("Do you want to install? Yes/No");
+        
+        string? response = Console.ReadLine();
+        if (!string.IsNullOrEmpty(response) && response.ToLower() == "yes")
+        {
+            Process.Start(new ProcessStartInfo($"https://setup.rbxcdn.com/{RobloxVersion}-Roblox.exe") { UseShellExecute = true });
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+            Environment.Exit(0);
+        }
+        else
+        {
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+            Environment.Exit(0);
+        }
+
     }
 }
 
