@@ -12,7 +12,7 @@ Console.WriteLine("Fetching roblox directory...");
 HttpResponseMessage GetRobloxVersion = await client.GetAsync("http://setup.roblox.com/version");
 string RobloxVersion = await GetRobloxVersion.Content.ReadAsStringAsync();
 string RobloxDir = $@"C:\Program Files (x86)\Roblox\Versions\{RobloxVersion}";
-string SecondaryDir = $@"{Environment.GetEnvironmentVariable("appdata")}\Local\Roblox\Versions\{RobloxVersion}";
+string SecondaryDir = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Roblox\Versions\{RobloxVersion}";
 
 if (!Directory.Exists(RobloxDir))
 {
