@@ -16,15 +16,13 @@ int main(int argc, char** argv)
 			std::this_thread::sleep_for(2s);
 			return FAILURE;
 		}
-
+		std::string current_version = { response.body.begin(), response.body.end() };
+		
 		std::string path = argv[0];
 		std::filesystem::path current_path = path.substr(0, path.find_last_of("\\/"));
-		
-		std::string current_version = { response.body.begin(), response.body.end() };
-
 		std::filesystem::path roblox_app = current_path / "RobloxPlayerBeta.exe";
 
-		if (current_path.parent_path().root_name() != current_version)
+		if (current_path.filename() != current_version)
 		{
 			std::cout << "[Launcher]: Roblox is outdated." << std::endl;
 			std::this_thread::sleep_for(2s);
