@@ -1,14 +1,35 @@
 #include "common.hpp"
+
 #include "utils/url_parser.hpp"
+#include "utils/http_request.hpp"
 
 int main(int argc, char** argv)
 {
 	try
 	{
-		std::string path = argv[0];
-		std::string dir = path.substr(0, path.find_last_of("\\/"));
+		http::Request request("http://setup.roblox.com/version");
+		const auto response = request.send("GET");
 
-		std::string roblox_app = dir + "\\RobloxPlayerBeta.exe";
+		if (response.status.code != http::Status::Ok) 
+		{
+			std::cout << "[Network]: error to get current version" << std::endl;
+			std::this_thread::sleep_for(2s);
+			return FAILURE;
+		}
+
+		std::string path = argv[0];
+		std::filesystem::path current_path = path.substr(0, path.find_last_of("\\/"));
+		
+		std::string current_version = { response.body.begin(), response.body.end() };
+
+		std::filesystem::path roblox_app = current_path / "RobloxPlayerBeta.exe";
+
+		if (current_path.parent_path().root_name() != current_version)
+		{
+			std::cout << "[Launcher]: Roblox is outdated." << std::endl;
+			std::this_thread::sleep_for(2s);
+			return FAILURE;
+		}
 
 		auto args = std::string_view(argv[1]) | std::views::split('+');
 
@@ -32,7 +53,7 @@ int main(int argc, char** argv)
 			args_vec[6],
 			args_vec[7]
 		);
-
+		
 		STARTUPINFOA si;
 		PROCESS_INFORMATION pi;
 		
@@ -40,7 +61,7 @@ int main(int argc, char** argv)
 		si.cb = sizeof(si);
 		ZeroMemory(&pi, sizeof(pi));
 		
-		if (CreateProcessA(roblox_app.c_str(), (LPSTR)roblox_args.c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+		if (CreateProcessA(roblox_app.generic_string().c_str(), (LPSTR)roblox_args.c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
 		{
 			CloseHandle(pi.hProcess);
 			CloseHandle(pi.hThread);
@@ -48,7 +69,7 @@ int main(int argc, char** argv)
 		else
 		{
 			std::cout << "Failed to create process: " << GetLastError() << std::endl;
-			return 1;
+			return FAILURE;
 		}
 	}
 	catch (const std::exception& ex)
@@ -56,5 +77,5 @@ int main(int argc, char** argv)
 		std::cout << "[ERROR]: " << ex.what() << std::endl;
 	}
 
-	return 0;
+	return SUCCESS;
 }

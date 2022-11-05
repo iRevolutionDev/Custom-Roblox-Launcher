@@ -15,5 +15,8 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="src\common.hpp" />
+    <ClInclude Include="src\utils\http_request.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
