@@ -6,12 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Configurations>Release</Configurations>
-    <BaseOutputPath>$(SolutionDir)Installer</BaseOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BaseOutputPath>$(SolutionDir)bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(SolutionDir)bin-int\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
