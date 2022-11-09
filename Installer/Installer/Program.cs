@@ -45,8 +45,8 @@ Console.WriteLine("Roblox directory: " + RobloxDir);
 // Fetches the latest launcher version
 Console.WriteLine("Fetching latest launcher version...");
 HttpResponseMessage GetLatestLauncherVersion = await client.GetAsync("https://api.github.com/repos/iRevolutionDev/Custom-Roblox-Launcher/releases/latest");
-dynamic? JsonLatestLauncherVersion = JsonConvert.DeserializeObject(await GetLatestLauncherVersion.Content.ReadAsStringAsync());
-string? DownloadUrl = JsonLatestLauncherVersion?.assets[0].browser_download_url;
+var JsonLatestLauncherVersion = JsonConvert.DeserializeObject<GitHubRelease>(await GetLatestLauncherVersion.Content.ReadAsStringAsync());
+string? DownloadUrl = JsonLatestLauncherVersion?.assets?.FirstOrDefault(x => x.name == "RobloxPlayerLauncher.exe")?.browser_download_url;
 
 Console.WriteLine("Latest launcher version: " + JsonLatestLauncherVersion?.name);
 
