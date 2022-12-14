@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 		}
 
 		std::string roblox_args = std::format(
-			"--InBrowser -t {} -j \"{}\" -b {} --launchtime={} --rloc {} --gloc {} -channel zflag",
+			"--app -t {} -j \"{}\" -b {} --launchtime={} --rloc {} --gloc {} -channel zflag",
 			args_vec[2],
 			url_parser::url_decode(args_vec[4]),
 			args_vec[5],
